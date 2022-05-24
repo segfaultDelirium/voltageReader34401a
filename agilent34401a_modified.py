@@ -8,6 +8,7 @@
 import pyftdi.serialext
 import time
 import os, sys, platform
+import struct
 
 def assertLinux():
     #check platform :
@@ -77,13 +78,7 @@ def readVoltage(port):
         data = data + port.read(2024)
     port.dtr = False
     if debug : print('-', data)
-    line = data
-    # data = data[0:-3] # sanitize the data
-    # print(f'after sanitizing: {data=}')
-
-    # line = "%s\t%f\t%f\n" % (data, float(data), float(data)/LSB)
-    print(line, end='')
-    return data;
+    return float(data)
 
 assertLinux()
 assertPython3()
@@ -106,7 +101,8 @@ while next :
         next = False
         continue;
     print('starting...')
-    readVoltage = readVoltage(port)
+    voltageReceived = readVoltage(port)
+    print(voltageReceived)
 
 remote = "SYST:LOC\n"
 port.write(remote)
