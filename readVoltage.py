@@ -15,8 +15,7 @@ import readVoltageLib
 readVoltageLib.assertLinux()
 readVoltageLib. assertPython3()
 
-port = pyftdi.serialext.serial_for_url(url='ftdi://ftdi:232:FT4T6R2Q/1', baudrate=9600, timeout=10, bytesize=8, stopbits=2, parity='N')
-#, xonxoff=False, rtscts=False, dsrdtr=True)
+port = pyftdi.serialext.serial_for_url(url='ftdi://ftdi:232:FT4T6R2Q/1', baudrate=9600, timeout=10, bytesize=8, stopbits=2, parity='N')#, xonxoff=False, rtscts=False, dsrdtr=True)
 readVoltageLib.initial(port)
 
 while True :
