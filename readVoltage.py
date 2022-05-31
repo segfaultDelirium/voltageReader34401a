@@ -25,7 +25,7 @@ while True :
         print('ending...')
         break;
     print('starting...')
-    voltageReceived = readVoltageLib.readAverageVoltage(port)
+    voltageReceived = readVoltageLib.readAverageVoltage(port, True)
     print(voltageReceived)
 
 remote = "SYST:LOC\n"

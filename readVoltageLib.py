@@ -54,9 +54,8 @@ def initial(port, debug=False):
     samp = "SAMP:COUN 1\n"
     port.write(samp)
 
-def readAverageVoltage(port, debug = False, seconds = 0.5):
+def readAverageVoltage(port, debug = False, sampleAmount=3):
     avg = 0.0
-    sampleAmount = seconds/0.05
     for i in range( int(sampleAmount)):
         avg += readVoltage(port, debug)
     return avg / sampleAmount 
