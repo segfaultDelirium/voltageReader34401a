@@ -21,12 +21,12 @@ dac_value = 4023
 data = dac_value.to_bytes(2, 'big')
 print(f'data= ', data)
 fullLength = 0xc0 + len(data)
-b = bytes([0x33, 0x35, 0x87, 0x00, *data,  0x80, fullLength +1])
+b = bytes([0x33, 0x35, 0x80 + len(data), *data,  0x80, fullLength])
 print("-", b)
 port.write(b)
 
 # Receive bytes
-nb = len(data) +1
+nb = len(data)
 print("Receiving at", brate)
 print(nb, "bytes")
 data = port.read(nb)
