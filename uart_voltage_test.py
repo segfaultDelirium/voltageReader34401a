@@ -1,10 +1,12 @@
+# to run the program: sudo python3 <filename>
+
 # Enable pyserial extensions
 import pyftdi.serialext
 from numpy import arange
 import time
 import readVoltageLib
 
-debug = True
+debug = False
 
 def writeToFPGA(port, bytesArray, debug=False):
     if debug:
@@ -29,10 +31,13 @@ def getPort(url, debug, **kwargs):
         return 'debug_port'
     return pyftdi.serialext.serial_for_url(url=url, **kwargs)
 
+def voltageInDAC_resolutionToBin(voltage):
+    return str(bin(voltage))
 
 
 
-fpgaUrl = 'ftdi://ftdi:232:AQ00RVZ8/1' # to check the url, run the script `ftdi_urls.py`
+
+fpgaUrl = 'ftdi://ftdi:232:AB0K3Q4S/1' # to check the url, run the script `sudo python3 ftdi_urls.py`
 sensorUrl = 'ftdi://ftdi:232:FT4T6R2Q/1'
 # Open a serial port on the second FTDI device interface (IF/2) @ 3Mbaud
 # available baud rates: 230400, 115200, 9600, 230400
@@ -57,12 +62,15 @@ DAC_resolution = 2**12 -1 #4095
 for voltage in arange(minVoltage, maxVoltage + voltageStep, voltageStep):
     print()
     voltageInDAC_resulution = int((voltage/maxVoltage) * DAC_resolution)
-    voltageBytesArray = [voltageInDAC_resulution] #bytes(voltageInDAC_resulution)
-    print(f'{voltage=}\t{voltageInDAC_resulution=}\t {voltageBytesArray=}')
-    writeToFPGA(fpgaPort, voltageInDAC_resulution, debug)
+    voltageBitsArray = str(bin(voltage))
+    # voltageBitsArray = [voltageInDAC_resulution] #bytes(voltageInDAC_resulution)
+    print(f'{voltage=}\t{voltageInDAC_resulution=}\t {voltageBitsArray=}')
+    writeToFPGA(fpgaPort, voltageBitsArray, debug)
     time.sleep(0.1)
-    fpgaVoltage = readFromFPGA(fpgaPort, len(voltageBytesArray), debug, expectedData=voltage)
+    fpgaVoltage = voltage
+    fpgaVoltage = readFromFPGA(fpgaPort, len(voltageBitsArray), debug, expectedData=voltage)
     print(f'{fpgaVoltage=}')
     time.sleep(0.1)
+    sensedVoltage = voltage
     sensedVoltage = readFromSensor(voltageReaderPort, debug, voltage);
     print(f'{sensedVoltage=}')

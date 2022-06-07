@@ -9,35 +9,27 @@ brate = 230400
 #9600
 #230400
 #shockley
-#url  = 'ftdi://ftdi:232:AQ00RVQC/1'
+#url  = 'ftdi://ftdi:232:AB0K3Q4S/1'
 #UBUNTU at home
-#url = 'ftdi://ftdi:232:AQ00RVZA/1'
 url = 'ftdi://ftdi:232:AB0K3Q4S/1'
 port = pyftdi.serialext.serial_for_url(url, baudrate=brate, bytesize=8, stopbits=1, parity='N', xonxoff=False, rtscts=False)
 
 # Send bytes
-helloString = "hello"
-bytesArray = bytes([0x33, 0x35, 0x87, *bytes(helloString, 'ascii'), 0x80, 0xc6 ])
 print("Transmition at", brate)
-#b = bytes([0x33, 0x35, 0x87, 0x32, 0x4c, 0x31, 0x36, 0x35, 0x35, 0x37, 0x80, 0xc7])
-print("-", bytesArray)
-port.write(bytesArray)
-#for line in lines:
-#	x = chr(int(line, 16))
-#	port.write(x)
-#	count += 1
-#	print(count, '-', line, x)
-
-#line = 'c5'
-#x = chr(int(line, 16))
-#port.write(x)
-#print('-', line, x)
+#data = [0x32, 0x4c, 0x31, 0x36, 0x35, 0x37]
+dac_value = 4023
+data = dac_value.to_bytes(2, 'big')
+print(f'data= ', data)
+fullLength = 0xc0 + len(data)
+b = bytes([0x33, 0x35, 0x87, 0x00, *data,  0x80, fullLength +1])
+print("-", b)
+port.write(b)
 
 # Receive bytes
-nb = 6 
+nb = len(data) +1
 print("Receiving at", brate)
 print(nb, "bytes")
 data = port.read(nb)
 print('-', data)
-#
 
+#
